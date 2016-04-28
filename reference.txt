@@ -1,0 +1,24 @@
+
+TRIPS
+trip_id  | route_id | service_id | trip_headsign | direction_id | block_id | shape_id
+
+SHAPES
+shape_id | shape_pt_sequence | shape_pt_lon | shape_pt_lat | shape_dist_traveled
+
+ROUTES
+route_id | route_short_name
+
+STOP_TIMES
+trip_id  | arrival_time | stop_id | stop_sequence 
+
+
+
+
+AVL_RAW
+REPORT_TIME | VEHICLE_TAG | LONGITUDE | LATITUDE | SPEED | HEADING | TRAIN_ASSIGNMENT
+
+AVL_LIVE
+secondsSinceReport | vehicle | longitude | latitude | speed | heading | routeTag | dirTag
+
+
+
