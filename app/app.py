@@ -1,35 +1,53 @@
-import pandas as pd
-import numpy as np
+"""
+Created on Fri Apr 29 11:04:55 2016
+
+@author: moses
+"""
+
+from flask import Flask, request
 import networkx as nx
-import requests
-from bs4 import BeautifulSoup
-import cPickle as pickle
-from model.utilities import haversine
+from code import utilities as ut
 
-with open('model/graph.pkl') as f:
-    G = pickle.load(f)
+app = Flask(__name__)
 
-stops = pd.read_csv('data/google_transit/stops.txt')
+path_to_graph = '../../bus_project_data/graph_x_7.gpkl'
+path_to_data = '../../bus_project_data/google_transit/'
+
+G_x = nx.read_gpickle(path_to_graph)
 
 
-def closest_stop(lat, lon, stop_data=stops):
-    pass
+# home page: welcome!
+@app.route('/')
+def index():
+    return '''
+        <p>Welcome! Think about your upcoming bus trip.</p>
+        <p>When you're ready, click <a href="/submit">here</a> to go to the submit page</p>
+        '''
 
-def best_routes(t, o_lat, o_lon, d_lat, d_lon, G):
-    ''' INPUT: departure time, origin (lat, lon), destination (lat, lon),
-                G: graph of stops & routes
-        OUTPUT: list of route plans & travel times
-            route plan: "wait at STOP_0 for ROUTE_0 until DEPARTURE_TIME_0"
-                        "de-bus at STOP_1 at ARRIVAL_TIME_1"
-                        ("walk to STOP_2" if necessary)
-                        "wait at STOP_1 for ROUTE_1 until DEPARTURE_TIME_1"
-                        ...
-                        "de-bus at STOP_N at ARRIVAL_TIME_N. You are at your
-                        destination"
 
-    '''
+# Form page to submit origin & destination
+@app.route('/submit')
+def submission_page():
+    return '''
+        <p>Input your origin (lat, lon) and destination (lat, lon):</p>
+        <form action="/predict" method='POST' >
+            <input type="text" name="user_input", size=60" />
+            <input type="submit" />
+        </form>
+        '''
 
-    origin_stop = closest_stop(o_lat, o_lon)
-    destination_stop = closest_stop(d_lat, d_lon)
 
-    path = nx.shortest_path(G, origin_stop, destination_stop)
+# Get the best bus path!
+@app.route('/predict', methods=['POST'] )
+def prediction():
+    text = str(request.form['user_input'])
+    origin = ut.get_closest_stop()
+    destination = ut.get_closest_stop()
+    current_time = 
+    path = ut.quickest_route()
+    directions = ut.condens_path()
+    return page.format(pred[0]) + '<p>{}</p>'.format(text)
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080, debug=True)

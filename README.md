@@ -1,7 +1,18 @@
 # Gimme That Bus!
 ##### SFMuni arrival time predictions & on-the-fly transfer recommendations
 
-Buses! In SF, they're only on time 60% of the time [[1]], making the official schedule a poor predictor of how long you'll have to wait for your bus. [NextBus] is a service that provides GPS tracking for an entire fleet of buses, and it uses this real-time location data (along with a proprietary algorithm) to make better predictions of bus arrival times. How much better? 70% accuracy.
+
+### How to use this code:
+- Download your transit agency's schedule in GTFS format
+  - e.g. [SF MTA Schedule]
+- run `schedule.py`
+  - This pickles the static schedule in an easy-to-reference format
+- run `build_static_graph.py`
+  - This makes a time-expanded directed graph with every time point of every stop as a node, connected by edges representing ways to travel between stops (walking & riding)
+- run `app.py` and have fun looking at your real-time bus options!
+- if you have access to historical GPS bus date ([woo SFMTA]), you can try fitting a model using `model.py` (coming soon) for better predictions
+
+Buses! In SF, they're only on time 60% of the time [[1]], making the official schedule a poor predictor of how long you'll have to wait for your bus. [NextBus] is a service that provides GPS tracking for an entire fleet of buses, and it uses this real-time location data (along with a proprietary algorithm) to make better predictions of bus arrival times. How much better? 70% accuracy [[2]].
 
 Goal #1: I would like to beat this number. With access to the past three years of GPS bus data as well as ancillary weather data, I will attempt to build a better predictive model.
 
@@ -37,14 +48,12 @@ Challenges:
 - I would like to incorporate ridership data into my models, since that would be quite a significant feature, but the only Muni data I can find is from 2006-20078.
 - Routes change or disappear over time, and new routes appear9. How do I best account for this in my models? Fitting to route segments seems to be the best approach, but if a new segment shows up, users will just have to wait until there's enough data for a good prediction.
 Sources:
-Bus GPS data from Aug 2012 to the present
-ftp://avl-data.sfmta.com/AVL_DATA/
+[woo SFMTA]: ftp://avl-data.sfmta.com/AVL_DATA/
 
 Real-time bus GPS data
 http://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf
 
-Routes & Schedules
-https://www.sfmta.com/about-sfmta/reports/gtfs-transit-data
+[SF MTA schedule]: https://www.sfmta.com/about-sfmta/reports/gtfs-transit-data
 
 Weather data
 https://www.ncdc.noaa.gov/homr/api
@@ -58,8 +67,7 @@ https://cartodb.com/
 
 [NextBus]: http://nextbus.cubic.com/About/How-NextBus-Works
 
-3. “San Francisco Transit Prediction Accuracy”
-https://goswift.ly/blog/2015/12/23/san-francisco-transit-prediction-accuracy-how-swyft-helps-you-commute-smarter-1
+[2]: https://goswift.ly/blog/2015/12/23/san-francisco-transit-prediction-accuracy-how-swyft-helps-you-commute-smarter-1
 
 4. Sun et al, 2007, “Predicting Bus Arrival Time on the Basis of Global Positioning System Data”
 https://www.researchgate.net/publication/245562763_Predicting_Bus_Arrival_Time_on_the_Basis_of_Global_Positioning_System_Data
