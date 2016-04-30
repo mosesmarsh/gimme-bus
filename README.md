@@ -10,7 +10,7 @@
 - run `build_static_graph.py`
   - This makes a time-expanded directed graph with every time point of every stop as a node, connected by edges representing ways to travel between stops (walking & riding)
 - run `app.py` (almost done) and have fun looking at your real-time bus options!
-- if you have access to historical GPS bus date (woo SFMTA: ftp://avl-data.sfmta.com/AVL_DATA/ ), you can try fitting a model using `model.py` (coming soon) for better predictions
+- if you have access to historical GPS bus data (woo SFMTA: ftp://avl-data.sfmta.com/AVL_DATA/ ), you can try fitting a model using `model.py` (coming soon) for better predictions
 
 Buses! In SF, they're only on time 60% of the time [[1]], making the official schedule a poor predictor of how long you'll have to wait for your bus. [NextBus] is a service that provides GPS tracking for an entire fleet of buses, and it uses this real-time location data (along with a proprietary algorithm) to make better predictions of bus arrival times. How much better? 70% accuracy [[2]].
 
