@@ -9,8 +9,8 @@
   - This pickles the static schedule in an easy-to-reference format
 - run `build_static_graph.py`
   - This makes a time-expanded directed graph with every time point of every stop as a node, connected by edges representing ways to travel between stops (walking & riding)
-- run `app.py` and have fun looking at your real-time bus options!
-- if you have access to historical GPS bus date ([woo SFMTA]), you can try fitting a model using `model.py` (coming soon) for better predictions
+- run `app.py` (almost done) and have fun looking at your real-time bus options!
+- if you have access to historical GPS bus date ([woo SFMTA](ftp://avl-data.sfmta.com/AVL_DATA/)), you can try fitting a model using `model.py` (coming soon) for better predictions
 
 Buses! In SF, they're only on time 60% of the time [[1]], making the official schedule a poor predictor of how long you'll have to wait for your bus. [NextBus] is a service that provides GPS tracking for an entire fleet of buses, and it uses this real-time location data (along with a proprietary algorithm) to make better predictions of bus arrival times. How much better? 70% accuracy [[2]].
 
@@ -48,7 +48,6 @@ Challenges:
 - I would like to incorporate ridership data into my models, since that would be quite a significant feature, but the only Muni data I can find is from 2006-20078.
 - Routes change or disappear over time, and new routes appear9. How do I best account for this in my models? Fitting to route segments seems to be the best approach, but if a new segment shows up, users will just have to wait until there's enough data for a good prediction.
 Sources:
-[woo SFMTA]: ftp://avl-data.sfmta.com/AVL_DATA/
 
 Real-time bus GPS data
 http://www.nextbus.com/xmlFeedDocs/NextBusXMLFeed.pdf
