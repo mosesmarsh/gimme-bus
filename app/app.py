@@ -6,15 +6,24 @@ Created on Fri Apr 29 11:04:55 2016
 
 from flask import Flask, request
 import networkx as nx
+import cPickle as pickle
 from code import utilities as ut
+from code.schedule import Schedule
+from code.routing import GraphRouter
 
 app = Flask(__name__)
 
-path_to_graph = '../../bus_project_data/graph_x_7.gpkl'
-path_to_data = '../../bus_project_data/google_transit/'
+path_to_data = '../../bus_project_data/'
 
-G_x = nx.read_gpickle(path_to_graph)
+with open(path_to_data+'schedule.pkl') as f:
+    sched = pickle.load(f)
 
+G_wait_walk = nx.read_gpickle(path_to_graph+'graph_waiting_walking.gpkl')
+G_ride_weekday = nx.read_gpickle(path_to_graph+'graph_riding_weekday.gpkl')
+G_ride_saturday = nx.read_gpickle(path_to_graph+'graph_riding_saturday.gpkl')
+G_ride_sunday = nx.read_gpickle(path_to_graph+'graph_riding_sunday.gpkl')
+
+g_router = GraphRouter(G_wait_walk, G_ride_weekday, G_ride_saturday, G_ride_sunday, sched)
 
 # home page: welcome!
 @app.route('/')
@@ -41,8 +50,8 @@ def submission_page():
 @app.route('/predict', methods=['POST'] )
 def prediction():
     text = str(request.form['user_input'])
-    origin = ut.get_closest_stop()
-    destination = ut.get_closest_stop()
+    origin = sched.get_closest_stop(o_lat, o_lon)
+    destination = sched.get_closest_stop(d_lat, d_lon)
     current_time = 
     path = ut.quickest_route()
     directions = ut.condens_path()

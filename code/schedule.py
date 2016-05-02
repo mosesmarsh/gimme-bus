@@ -7,7 +7,7 @@ import pandas as pd
 import utilities as ut
 import cPickle as pickle
 from time import time
-from datetime.datetime import strftime, fromtimestamp
+from datetime import datetime as dt
 
 class Schedule(object):
     def __init__(self, gtfs_path):
@@ -92,7 +92,7 @@ class Schedule(object):
         OUTPUT: next timepoint at stop_id
         """
         if current_time == False:
-            current_time = strftime(fromtimestamp(time()), '%H:%M:%S')
+            current_time = dt.strftime(dt.fromtimestamp(time()), '%H:%M:%S')
         for node in self.all_stop_timepoints[stop_id]:
             if node[-8] > current_time:
                 return node
