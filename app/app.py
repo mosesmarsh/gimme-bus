@@ -52,8 +52,7 @@ def prediction():
     text = str(request.form['user_input'])
     origin = sched.get_closest_stop(o_lat, o_lon)
     destination = sched.get_closest_stop(d_lat, d_lon)
-    current_time = 
-    path = ut.quickest_route()
+    path = g_router.quickest_route()
     directions = ut.condens_path()
     return page.format(pred[0]) + '<p>{}</p>'.format(text)
 
