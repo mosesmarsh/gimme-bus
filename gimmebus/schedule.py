@@ -6,7 +6,6 @@ Created on Fri Apr 29 11:33:03 2016
 import pandas as pd
 import utilities as ut
 import cPickle as pickle
-from time import time
 from datetime import datetime as dt
 
 class Schedule(object):
@@ -85,18 +84,14 @@ class Schedule(object):
                 axis=1)
         return dist.argmin()
 
-    def get_next_stop_timepoint(self, stop_id, current_time=False):
+    def get_next_stop_timepoint(self, stop_id, time_point):
         """
-        INPUT: stop_id, current_time as timestamp HH:MM:SS 
-                (if time isn't given, current time right NOW is used)
+        INPUT: stop_id, time_point as timestamp string 'HH:MM:SS' 
         OUTPUT: next timepoint at stop_id
         """
-        if current_time == False:
-            current_time = dt.strftime(dt.fromtimestamp(time()), '%H:%M:%S')
         for node in self.all_stop_timepoints[stop_id]:
-            if node[-8] > current_time:
+            if node[-8] > time_point:
                 return node
-
 
 if __name__ == '__main__':
     sched = Schedule('../bus_project_data/google_transit/')

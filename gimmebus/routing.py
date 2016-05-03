@@ -9,7 +9,6 @@ import numpy as np
 from schedule import Schedule
 import utilities as ut
 import cPickle as pickle
-from time import time
 import datetime as dt
 
 class GraphRouter(object):
@@ -23,11 +22,11 @@ class GraphRouter(object):
         self.schedule = sched
         today_number = dt.date.today().weekday()
         if today_number <= 4:
-            self.G.add_edges_from(self.G_ride_week)
+            self.G.add_edges_from(self.G_ride_week.edges(data=True))
         if today_number == 5:
-            self.G.add_edges_from(self.G_ride_sat)            
+            self.G.add_edges_from(self.G_ride_sat.edges(data=True))            
         if today_number == 6:
-            self.G.add_edges_from(self.G_ride_sun)
+            self.G.add_edges_from(self.G_ride_sun.edges(data=True))
             
     def quickest_route(self, source, target, est_time=7200):
         """
@@ -48,7 +47,7 @@ class GraphRouter(object):
                     return p_t, p
 
 
-    def condense_path(self, path):
+    def _condense_path(self, path):
         """
         INPUT: path: list of stops (nodes) traversed
         OUTPUT: path that only lists stops involving a transfer
@@ -59,34 +58,58 @@ class GraphRouter(object):
             # Get route_id for trip connecting nodes. If the nodes are
             # connected with a "walking" edge, set route = 'Walk'
             route = self.G[path[i]][path[i+1]].get('route_id', 'Walk')
+            edge_type = self.G[path[i]][path[i+1]].get('type')
             if route == last_step:
+                continue
+            if edge_type == 'wait':
                 continue
             condensed_path.append(path[i])
             last_step = route
         condensed_path.append(path[-1])
         return condensed_path
     
-    def print_path(self, path, condensed=True):
+    def path_directions(self, path):
         """
         INPUT: graph G, path p, route_db routes
-        OUTPUT: path in human-readable directions
+        OUTPUT: list of strings. "path" in human-readable directions
             e.g. "08:15:00: Arrive at Walnut & California
                             Take 44 to Water & Chestnut
         """
-        if condensed:
-            path = self.condense_path(path)
-    
-        for i in xrange(len(path) - 1):
-            route = self.G[path[i]][path[i+1]].get('route_id', 'Walk')
+        directions = []
+        step_str = '{0}: Arrive at {1}. {2} to {3}'
+        path_condensed = self._condense_path(path)
+        
+        for i in xrange(len(path_condensed) - 1):
+            node = path_condensed[i]
+            stop_id = int(node[:-9])
+            arr_time = node[-8:]
+            next_stop_id = int(path_condensed[i+1][:-9])
+            p_idx = path.index(node)
+            route = self.G[path[p_idx]][path[p_idx+1]].get('route_id', 'Walk')
             if route != 'Walk':
                 route = 'Take ' + self.schedule.routes.loc[route]['route_short_name']
-            print '{0}: Arrive at {1}.\n\t  {2} to {3}'.\
-                        format(self.G.node[path[i]]['arrival_time'], \
-                               self.G.node[path[i]]['stop_name'], \
-                               route, self.G.node[path[i+1]]['stop_name'])
-        print '{0}: Arrive at {1}'.format(self.G.node[path[-1]]['arrival_time'],\
-                                          self.G.node[path[-1]]['stop_name'])
-    
+            step = step_str.format(\
+                        arr_time, \
+                        self.schedule.stops.loc[stop_id]['stop_name'], \
+                        route, self.schedule.stops.loc[next_stop_id]['stop_name'])
+            directions.append(step)
+        directions.append('{0}: Arrive at {1}'.format(\
+                        path_condensed[-1][-8:],\
+                        self.schedule.stops.loc[int(path_condensed[-1][:-9])]['stop_name']))   
+#        for i in xrange(len(path) - 1):
+#            route = self.G[path[i]][path[i+1]].get('route_id', 'Walk')
+#            if route != 'Walk':
+#                route = 'Take ' + self.schedule.routes.loc[route]['route_short_name']
+#            step = step_str.format(\
+#                        self.G.node[path[i]]['arrival_time'], \
+#                        self.G.node[path[i]]['stop_name'], \
+#                        route, self.G.node[path[i+1]]['stop_name'])
+#            directions.append(step)
+#        directions.append('{0}: Arrive at {1}'.format(\
+#                                        self.G.node[path[-1]]['arrival_time'],\
+#                                        self.G.node[path[-1]]['stop_name']))
+        return directions
+        
 if __name__ == '__main__':
     with open('schedule.pkl') as f:
         sched = pickle.load(f)
