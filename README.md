@@ -13,10 +13,10 @@
 - if you have access to historical GPS bus data (woo SFMTA: ftp://avl-data.sfmta.com/AVL_DATA/ ), you can try fitting a model using `model.py` (coming soon) for better predictions
 
 Screenshots of the web app:<br>
-![alt text](https://github.com/mosesmarsh/gimme-bus/static/screenshot1.png "App screenshot 1")
+![alt text](https://github.com/mosesmarsh/gimme-bus/blob/master/static/screenshot1.png "App screenshot 1")
 
 
-![alt text](https://github.com/mosesmarsh/gimme-bus/static/screenshot2.png "App screenshot 2")
+![alt text](https://github.com/mosesmarsh/gimme-bus/blob/master/static/screenshot2.png "App screenshot 2")
 
 Buses! In SF, they're only on time 60% of the time [[1]], making the official schedule a poor predictor of how long you'll have to wait for your bus. [NextBus] is a service that provides GPS tracking for an entire fleet of buses, and it uses this real-time location data (along with a proprietary algorithm) to make better predictions of bus arrival times. How much better? 70% accuracy [[2]].
 
