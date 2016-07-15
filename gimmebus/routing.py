@@ -42,7 +42,7 @@ class GraphRouter(object):
             t2 = n[-8:]
             if (t2 > t1) and (ut.diff_timestamps(t1, t2) < est_time):
                 try:
-                    p_t, p = nx.bidirectional_dijkstra(self.G, source, n, weight='duration')
+                    p_t, p = nx.bidirectional_dijkstra(self.G, source, n, weight='bees')
                 except nx.NetworkXNoPath:
                     return p_t, p
 
@@ -70,7 +70,7 @@ class GraphRouter(object):
     
     def path_directions(self, path):
         """
-        INPUT: graph G, path p, route_db routes
+        INPUT: path
         OUTPUT: list of strings. "path" in human-readable directions
             e.g. "08:15:00: Arrive at Walnut & California
                             Take 44 to Water & Chestnut
@@ -87,27 +87,15 @@ class GraphRouter(object):
             p_idx = path.index(node)
             route = self.G[path[p_idx]][path[p_idx+1]].get('route_id', 'Walk')
             if route != 'Walk':
-                route = 'Take ' + self.schedule.routes.loc[route]['route_short_name']
+                route = 'Take ' + self.schedule.routes.loc[route]['route_short_name'].strip()
             step = step_str.format(\
                         arr_time, \
-                        self.schedule.stops.loc[stop_id]['stop_name'], \
-                        route, self.schedule.stops.loc[next_stop_id]['stop_name'])
+                        self.schedule.stops.loc[stop_id]['stop_name'].strip(), \
+                        route, self.schedule.stops.loc[next_stop_id]['stop_name'].strip())
             directions.append(step)
         directions.append('{0}: Arrive at {1}'.format(\
                         path_condensed[-1][-8:],\
-                        self.schedule.stops.loc[int(path_condensed[-1][:-9])]['stop_name']))   
-#        for i in xrange(len(path) - 1):
-#            route = self.G[path[i]][path[i+1]].get('route_id', 'Walk')
-#            if route != 'Walk':
-#                route = 'Take ' + self.schedule.routes.loc[route]['route_short_name']
-#            step = step_str.format(\
-#                        self.G.node[path[i]]['arrival_time'], \
-#                        self.G.node[path[i]]['stop_name'], \
-#                        route, self.G.node[path[i+1]]['stop_name'])
-#            directions.append(step)
-#        directions.append('{0}: Arrive at {1}'.format(\
-#                                        self.G.node[path[-1]]['arrival_time'],\
-#                                        self.G.node[path[-1]]['stop_name']))
+                        self.schedule.stops.loc[int(path_condensed[-1][:-9])]['stop_name'].strip()))
         return directions
         
 if __name__ == '__main__':

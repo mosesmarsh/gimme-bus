@@ -90,7 +90,7 @@ class Schedule(object):
         OUTPUT: next timepoint at stop_id
         """
         for node in self.all_stop_timepoints[stop_id]:
-            if node[-8] > time_point:
+            if node[-8:] > time_point:
                 return node
 
 if __name__ == '__main__':
